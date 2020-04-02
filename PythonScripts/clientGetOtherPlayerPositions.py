@@ -42,7 +42,8 @@ playerID = str(obj['ID'])
 
 for i in range(len(Matrix)):
     if Matrix[i][0] != playerID:
+        test = 2
         controller = bge.logic.getCurrentController()
         obj = controller.owner
         scene = bge.logic.getCurrentScene()
-        scene.objects["Cube.002"].localPosition = [float(Matrix[i][1]), float(Matrix[i][2]), float(Matrix[i][3])]
+        scene.objects["Cube.00"+str(test)].localPosition = [float(Matrix[i][1]), float(Matrix[i][2]), float(Matrix[i][3])]

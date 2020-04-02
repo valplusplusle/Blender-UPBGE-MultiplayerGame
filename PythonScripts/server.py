@@ -1,6 +1,6 @@
 import socket
 
-w, h = 4, 2;
+w, h = 4, 4;
 Matrix = [[0 for x in range(w)] for y in range(h)]
 
 localIP     = "127.0.0.1"
@@ -48,6 +48,6 @@ while(True):
                 Matrix[i][0]= playerId
                 Matrix[i][1]= posX
                 Matrix[i][2]= posY
-                Matrix[i][3]= posZ
+                Matrix[i][3]= posZ                
                 break
         UDPServerSocket.sendto(bytesToSend, address)
