@@ -7,9 +7,6 @@ localIP     = "127.0.0.1"
 localPort   = 20001
 bufferSize  = 1024
 
-msgFromServer       = "Online"
-bytesToSend         = str.encode(msgFromServer)
-
 # Create a datagram socket
 UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
 
@@ -20,16 +17,18 @@ print("UDP server up and listening")
 # Listen for incoming datagrams
 
 while(True):
+    msgFromServer       = "Online"
+    bytesToSend         = str.encode(msgFromServer)
+
     bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
     message = bytesAddressPair[0]
     address = bytesAddressPair[1]
     clientMsg = format(message)
+
     if(clientMsg == "getPositions"):
         #Send all Pos data from all players as anwser
         positionPlayer       = str(Matrix)
         bytespositionPlayer  = str.encode(positionPlayer)
-        print (positionPlayer)
-        print (bytespositionPlayer)
         UDPServerSocket.sendto(bytespositionPlayer, address)
     else:
         #Get pos data from the player and save it to the player list
@@ -38,16 +37,28 @@ while(True):
         posX = positionData[1]
         posY = positionData[2]
         posZ = positionData[3]
+        clientAlreadyAvailable = False
+
         for i in range(len(Matrix)):
             if Matrix[i][0] == playerId:
                 Matrix[i][1]= posX
                 Matrix[i][2]= posY
                 Matrix[i][3]= posZ
-                break
-            if Matrix[i][0] == 0:
-                Matrix[i][0]= playerId
-                Matrix[i][1]= posX
-                Matrix[i][2]= posY
-                Matrix[i][3]= posZ                
-                break
+                clientAlreadyAvailable = True
+
+        if clientAlreadyAvailable == False:
+            addNewClientStatus = False
+            for i in range(len(Matrix)):
+                if Matrix[i][0] == 0:
+                    Matrix[i][0]= playerId
+                    Matrix[i][1]= posX
+                    Matrix[i][2]= posY
+                    Matrix[i][3]= posZ
+                    print("add new client")
+                    addNewClientStatus = True
+                    break
+            if addNewClientStatus == False:
+                serverInfo       = "Server Full"
+                bytesToSend      = str.encode(serverInfo)
+                print("server full")
         UDPServerSocket.sendto(bytesToSend, address)
