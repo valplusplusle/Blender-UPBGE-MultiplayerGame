@@ -1,7 +1,9 @@
 import socket
+import time
 
 w, h = 4, 4;
 Matrix = [[0 for x in range(w)] for y in range(h)]
+Active = [[0 for x in range(w-2)] for y in range(h)]
 
 localIP     = "127.0.0.1"
 localPort   = 20001
@@ -17,6 +19,8 @@ print("UDP server up and listening")
 # Listen for incoming datagrams
 
 while(True):
+    print (Matrix)
+    print (Active)
     msgFromServer       = "Online"
     bytesToSend         = str.encode(msgFromServer)
 
@@ -24,12 +28,26 @@ while(True):
     message = bytesAddressPair[0]
     address = bytesAddressPair[1]
     clientMsg = format(message)
+    splittedMsg = clientMsg.split(',')
 
-    if(clientMsg == "getPositions"):
+    if clientMsg == "getPositions":
         #Send all Pos data from all players as anwser
         positionPlayer       = str(Matrix)
         bytespositionPlayer  = str.encode(positionPlayer)
         UDPServerSocket.sendto(bytespositionPlayer, address)
+
+    elif splittedMsg[0] == "activeTime":
+        clientAlreadyActive = False
+        for i in range(len(Active)):
+            if Active[i][0] == splittedMsg[1]:
+                Active[i][1]= splittedMsg[2]
+                clientAlreadyActive = True
+        if clientAlreadyActive == False:
+            for i in range(len(Active)):
+                if Active[i][0] == 0 and clientAlreadyActive == False:
+                    Active[i][0]= splittedMsg[1]
+                    Active[i][1]= splittedMsg[2]
+                    clientAlreadyActive = True
     else:
         #Get pos data from the player and save it to the player list
         positionData = clientMsg.split(',')
@@ -62,3 +80,19 @@ while(True):
                 bytesToSend      = str.encode(serverInfo)
                 print("server full")
         UDPServerSocket.sendto(bytesToSend, address)
+
+    timeNow = float(time.time())
+    for i in range(len(Active)):
+        if Active[i][1] != 0:
+            timeSend = float(Active[i][1])
+            if timeSend < (timeNow-10):
+                idToDelete = Active[i][0]
+                for j in range(len(Matrix)):
+                    if Matrix[j][0] == idToDelete:
+                        Matrix[j][0] = 0
+                        Matrix[j][1] = 0
+                        Matrix[j][2] = 0
+                        Matrix[j][3] = 0
+                Active[i][0] = 0
+                Active[i][1] = 0
+                
