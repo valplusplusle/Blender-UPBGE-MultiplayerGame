@@ -6,15 +6,10 @@ controller = bge.logic.getCurrentController()
 obj = controller.owner
 scene = bge.logic.getCurrentScene()
 
-
 playerID = str(obj['ID'])
+myTime = time.time()
 
-myPosX = str(scene.objects["Cube"].localPosition.x)
-myPosY = str(scene.objects["Cube"].localPosition.y)
-myPosZ = str(scene.objects["Cube"].localPosition.z)
-#print (myPosX, myPosY, myPosZ)
-
-msgFromClient       = playerID+","+myPosX+","+myPosY+","+ myPosZ
+msgFromClient       = "activeTime,"+str(playerID)+","+str(myTime)
 bytesToSend         = str.encode(msgFromClient)
 serverAddressPort   = ("127.0.0.1", 20001)
 bufferSize          = 1024

@@ -21,8 +21,8 @@ msglist = msglist.replace("[", "")
 msglist = msglist.replace("]", "")
 msglist = msglist.replace('"', "")
 msglist = msglist.split(", ")
-
-w, h = 4, 2;
+print(msglist)
+w, h = 4, 4;
 Matrix = [[0 for x in range(w)] for y in range(h)]
 
 Matrix[0][0] = msglist[0]
@@ -35,15 +35,26 @@ Matrix[1][1] = msglist[5]
 Matrix[1][2] = msglist[6]
 Matrix[1][3] = msglist[7]
 
+Matrix[1][0] = msglist[8]
+Matrix[1][1] = msglist[9]
+Matrix[1][2] = msglist[10]
+Matrix[1][3] = msglist[11]
+
+Matrix[1][0] = msglist[12]
+Matrix[1][1] = msglist[13]
+Matrix[1][2] = msglist[14]
+Matrix[1][3] = msglist[15]
+
 controller = bge.logic.getCurrentController()
 obj = controller.owner
 scene = bge.logic.getCurrentScene()
 playerID = str(obj['ID'])
 
+test = 1
 for i in range(len(Matrix)):
     if Matrix[i][0] != playerID:
-        test = 2
         controller = bge.logic.getCurrentController()
         obj = controller.owner
         scene = bge.logic.getCurrentScene()
         scene.objects["Cube.00"+str(test)].localPosition = [float(Matrix[i][1]), float(Matrix[i][2]), float(Matrix[i][3])]
+        test = test +1
